@@ -1,0 +1,7 @@
+condition,bookings_true,cancel_rate_true,cancel_rate_false
+RequiredCarParkingSpaces > 0,1847,0.0,0.314
+AssignedRoomType != ReservedRoomType,5639,0.052,0.334
+BookingChanges > 0,8429,0.168,0.329
+DaysInWaitingList > 0,705,0.393,0.302
+TotalOfSpecialRequests > 0,26387,0.222,0.387
+DepositType = Non Refund,802,0.97,0.293

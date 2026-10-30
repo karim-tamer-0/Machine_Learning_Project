@@ -1,0 +1,8 @@
+rule,rows_removed,rows_left
+start: All_models_data.csv,0,78092
+exact duplicate rows,25771,52321
+no adult on the booking,213,52108
+ADR > 500,2,52106
+LeadTime > 500,54,52052
+total nights > 21,45,52007
+Babies > 2,2,52005
