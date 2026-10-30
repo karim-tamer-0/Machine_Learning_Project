@@ -1,4 +1,5 @@
 import pandas as pd
+import os
 
 #Load raw dataset directly from GitHub raw URL
 df = pd.read_csv(
@@ -23,3 +24,11 @@ df = df[(df['Children'] + df['Adults'] + df['Babies']) > 0]
 print("Dataset shape after cleaning:", df.shape)
 print("Remaining NAs in 'Children':", df['Children'].isna().sum())
 print("Remaining NAs in 'Country':", df['Country'].isna().sum())
+
+#Save to src/data/All_models_data.csv
+current_script_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.abspath(os.path.join(current_script_dir, "..", ".."))
+target_dir = os.path.join(project_root, "src", "data")
+target_file = os.path.join(target_dir, "All_models_data.csv")
+os.makedirs(target_dir, exist_ok=True)
+df.to_csv(target_file, index=False, header=True)
