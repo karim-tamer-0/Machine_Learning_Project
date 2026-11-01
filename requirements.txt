@@ -2,3 +2,5 @@ pandas
 numpy
 matplotlib
 pyyaml
+scikit-learn>=1.2
+pytest
