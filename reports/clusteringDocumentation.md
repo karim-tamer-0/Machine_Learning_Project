@@ -1,4 +1,4 @@
-#**Analysis**
+# **Analysis**
 We loaded the CSV file into the variable cc and started inspecting and analyzing the data.
 
 Initially, we set our goal to identify customer segments, understand how customers relate to each other, and group similar customers into clusters. Later, we can use these clusters to determine which customer segments are most important to the hotel, which ones generate more revenue and why, what makes those customers happier, and what they look for in our hotel.
