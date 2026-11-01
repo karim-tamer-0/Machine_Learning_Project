@@ -1,19 +1,19 @@
 """Untuned baseline classifiers evaluated with cross-validation on the TRAINING set only
 (Member B, Milestone 1). The validation and test sets are not used here.
- 
-Run from the repo root:   python -m src.classification.baseline
+
+Run from the repo root:   python main.py baseline --task classification --model all
 """
 import time
- 
+
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import cross_validate
- 
+
 from src.classification.pipeline import build_pipeline
 from src.data.loader import PROJECT_ROOT, load_config
 from src.data.split import get_cv, load_classification_split
- 
+
 SCORING = {
     "accuracy": "accuracy",
     "precision": "precision",
@@ -22,8 +22,8 @@ SCORING = {
     "roc_auc": "roc_auc",
     "pr_auc": "average_precision",
 }
- 
- 
+
+
 def run_cv(name, pipeline, X, y, cv, feature_set="strict", scaled=True):
     """5-fold CV of one pipeline. Returns one row: mean and std of every metric,
     the training F1 (to spot overfitting) and the mean fit time per fold."""
@@ -39,31 +39,46 @@ def run_cv(name, pipeline, X, y, cv, feature_set="strict", scaled=True):
     row["fit_time_per_fold_s"] = res["fit_time"].mean()
     row["total_time_s"] = time.perf_counter() - start
     return row
- 
- 
+
+
 def baseline_models(seed):
     """name -> (untuned estimator, uses scaled preprocessing)."""
     return {
         "logistic_regression": (LogisticRegression(max_iter=1000, random_state=seed), True),
         "random_forest": (RandomForestClassifier(random_state=seed, n_jobs=-1), False),
     }
- 
- 
-if __name__ == "__main__":
+
+
+def select_models(models, model_name):
+    """Return all models for 'all', or just the requested one."""
+    if model_name == "all":
+        return models
+    if model_name not in models:
+        raise SystemExit(f"Unknown model '{model_name}'. Choose from: all, {', '.join(models)}")
+    return {model_name: models[model_name]}
+
+
+def run_baseline_cv(model_name="all"):
     config = load_config()
     X_train, _, _, y_train, _, _ = load_classification_split("strict", config)
     cv = get_cv(config)
- 
+
     rows = []
-    for name, (model, scaled) in baseline_models(config["seed"]).items():
+    for name, (model, scaled) in select_models(baseline_models(config["seed"]), model_name).items():
         pipeline = build_pipeline(model, "strict", scale=scaled, config=config)
         rows.append(run_cv(name, pipeline, X_train, y_train, cv, scaled=scaled))
         print(f"done: {name}")
- 
+
     results = pd.DataFrame(rows)
     out_dir = PROJECT_ROOT / config["classification"]["output_dir"]
     out_dir.mkdir(parents=True, exist_ok=True)
-    path = out_dir / "baseline_cv_metrics.csv"
+    suffix = "" if model_name == "all" else f"_{model_name}"
+    path = out_dir / f"baseline_cv_metrics{suffix}.csv"
     results.to_csv(path, index=False)
     print(results.set_index("model").T.round(4).to_string())
     print("saved:", path)
+    return results
+
+
+if __name__ == "__main__":
+    run_baseline_cv("all")
