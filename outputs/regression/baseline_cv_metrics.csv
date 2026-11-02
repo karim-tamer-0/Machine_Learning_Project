@@ -1,0 +1,2 @@
+model,config,feature_set,n_features,n_train,cv_folds,cv_MAE_mean,cv_MAE_std,cv_RMSE_mean,cv_RMSE_std,cv_R2_mean,cv_R2_std,train_R2_mean,fit_time_per_fold_s,total_time_s
+linear_regression,baseline (untuned),"version 2 (flags removed, names stripped)",50,35548,5,18.92584801103515,0.2093103833597172,25.1631903133948,0.44185421176186573,0.5931675514804257,0.008957575924870436,0.5953719537228382,0.08744316101074219,0.5277521000098204
