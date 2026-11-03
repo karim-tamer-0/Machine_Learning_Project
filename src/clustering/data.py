@@ -50,7 +50,7 @@ def load_raw_aligned(n_expected, config=None):
     """
     config = config or load_config()
     raw = pd.read_csv(PROJECT_ROOT / config["data"]["raw_path"])
-    for c in raw.select_dtypes("object"):
+    for c in raw.select_dtypes(exclude="number"):
         raw[c] = raw[c].str.strip()
     raw["Children"] = raw["Children"].fillna(0)
     keep = (raw["Adults"] > 0) & (raw["Babies"] <= 2)
