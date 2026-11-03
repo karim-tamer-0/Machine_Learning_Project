@@ -1,0 +1,5 @@
+representation,n_rows,n_features,silhouette,davies_bouldin,calinski_harabasz,min_cluster,max_cluster,fit_seconds
+v1,78938,54,0.1183,1.8868,7634.4681,364,18784,1.01
+v1_dedup,53053,54,0.0951,1.9325,5519.2135,364,10003,0.54
+v2,78938,53,0.1035,2.0701,6645.7927,4336,14528,1.01
+v2_no_country,78938,37,0.1372,1.9949,7538.0361,4199,19012,0.75

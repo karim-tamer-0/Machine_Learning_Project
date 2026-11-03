@@ -1,0 +1,28 @@
+{
+  "algorithm": "KMeans (untuned baseline)",
+  "representation": "v2_no_country",
+  "n_rows": 78938,
+  "n_features": 37,
+  "dropped_constant": [
+    "ReservedRoomType_P"
+  ],
+  "params": {
+    "n_clusters": 8,
+    "init": "k-means++",
+    "n_init": 10,
+    "random_state": 42
+  },
+  "silhouette_sample_size": 10000,
+  "fit_seconds": 0.75,
+  "pca_components_for_80_90_95": [
+    8,
+    11,
+    13
+  ],
+  "pca_pc1_pc2_variance": 0.3429462733460425,
+  "silhouette": 0.13719228819516374,
+  "davies_bouldin": 1.9948645174540744,
+  "calinski_harabasz": 7538.036130842316,
+  "min_cluster": 4199,
+  "max_cluster": 19012
+}
