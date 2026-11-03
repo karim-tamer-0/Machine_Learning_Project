@@ -4,3 +4,5 @@ matplotlib
 pyyaml
 scikit-learn>=1.2
 pytest
+joblib
+python-dotenv
