@@ -21,6 +21,11 @@ classification:
       TotalNights: 21
       Babies: 2
 
+  split:
+    val_size: 0.2
+    test_size: 0.1
+    cv_folds: 5
+
   features:
     # Fixed when the booking is created. Use this list for the reported results.
     strict:
