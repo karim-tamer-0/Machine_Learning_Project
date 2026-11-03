@@ -103,6 +103,4 @@ Silhouette values across different feature spaces are only indicative. v2 remove
 - Optimisation criterion: silhouette, then Davies-Bouldin, with BIC for GMM. No supervised labels. Baseline vs optimised table for every algorithm.
 - PCA 2-D visualisation, stability check, final interpretation, saved artifacts, `cluster` CLI options and the app page.
 
-## 7. Contributions
 
-Preprocessing and EDA of the clustering matrix: *(name, GitHub account)*. Clustering baseline, evaluation code, tests and this report: *(name, GitHub account)*.
