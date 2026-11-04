@@ -45,3 +45,15 @@ python -m pytest -q                                         # run all tests
 ```
 
 Results are written to `outputs/classification/`: `baseline_cv_metrics.csv`, `baseline_validation_metrics.csv`, `confusion_matrix_baseline_*.png` and `splits/split_indices.csv`.
+## Clustering (Task C): baseline, Milestone 1
+
+- Analysis point: booking creation time. Input: `outputs/Clustering/kmeans_cleaned_scaled.csv` (made by `src/Preprocessing/Clustering/clusteringprocessing.py`). Outcome columns (IsCanceled, ReservationStatus*, ADR, AssignedRoomType, BookingChanges, DaysInWaitingList) are not inputs.
+- Report: `reports/clustering_milestone1.md`.
+
+```bash
+python main.py cluster --algorithm kmeans                 # untuned K-Means (k=8), k=2..12 sweep, PCA plot, cluster profile
+python main.py cluster --algorithm kmeans --compare       # same baseline on 4 feature representations
+python -m pytest -q tests/test_clustering.py
+```
+
+Results go to `outputs/Clustering/` (`*_v1.*` is the team matrix). The fitted model is saved in `artifacts/clustering/` (git-ignored).

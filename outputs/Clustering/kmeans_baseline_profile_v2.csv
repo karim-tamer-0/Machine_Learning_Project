@@ -1,0 +1,9 @@
+,size,share,LeadTime,Adults,StaysInWeekendNights,StaysInWeekNights,TotalOfSpecialRequests,HasChildren,HasBabies,posthoc_cancel_rate,posthoc_mean_ADR,Meal,MarketSegment,DistributionChannel,ReservedRoomType,CustomerType,Country
+0,9275,0.117,107.481,1.0,0.533,2.109,0.128,0.015,0.0,0.445,94.692,BB (86%),Offline TA/TO (37%),TA/TO (85%),A (93%),Transient (53%),PRT (56%)
+1,9685,0.123,82.539,1.996,0.0,2.526,0.529,0.104,0.004,0.396,116.139,BB (69%),Online TA (85%),TA/TO (92%),A (71%),Transient (91%),FRA (15%)
+2,7853,0.099,89.076,1.938,0.876,2.472,2.255,0.161,0.022,0.214,119.331,BB (76%),Online TA (86%),TA/TO (91%),A (71%),Transient (85%),FRA (15%)
+3,10810,0.137,133.667,1.961,1.553,0.834,0.355,0.048,0.003,0.491,98.47,BB (74%),Online TA (38%),TA/TO (94%),A (89%),Transient (60%),PRT (44%)
+4,14528,0.184,96.74,1.954,1.656,3.364,0.453,0.092,0.003,0.395,107.688,BB (77%),Online TA (71%),TA/TO (91%),A (72%),Transient (89%),FRA (18%)
+5,8901,0.113,3.36,1.488,0.416,1.093,0.44,0.05,0.007,0.123,96.847,BB (79%),Online TA (39%),TA/TO (49%),A (83%),Transient (86%),PRT (54%)
+6,13550,0.172,213.217,2.004,0.166,2.222,0.081,0.004,0.001,0.703,90.38,BB (83%),Groups (50%),TA/TO (95%),A (99%),Transient (56%),PRT (80%)
+7,4336,0.055,93.57,3.007,0.927,2.512,0.834,0.028,0.0,0.387,156.333,BB (92%),Online TA (84%),TA/TO (93%),D (71%),Transient (93%),FRA (15%)
