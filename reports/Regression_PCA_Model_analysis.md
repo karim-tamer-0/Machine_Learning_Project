@@ -11,15 +11,18 @@ Task A (Linear Regression / ADR Prediction) — Work Documentation
 
 As part of the Task A (Regression) subteam, the following engineering, cleaning, evaluation, and pipeline integration tasks were performed:
 
-1. **Dataset Versioning \& Cleaning Script (`src/Preprocessing/Regression2.py`):**
+1. **Dataset Versioning \& Cleaning Scripts (`src/Preprocessing/Regression2.py`, `src/Preprocessing/Regression3.py`):**
 
    * Identified and fixed two data-structure issues present in the preliminary data pipeline:
 
      * **Constant Flag Columns:** In raw data, `Agent` and `Company` contained 11-character padded strings (e.g., `"       NULL"`). String replacement failed without prior stripping, causing `HasAgent` and `HasCompany` to become constant `1` flags (which normalized to constant `0` with zero variance).
      * **Trailing Whitespace in Category Headers:** Category labels contained trailing spaces (e.g., `Meal\_FB       `), creating messy column names.
-   * Created `Regression2.py` to generate clean **Version 2 data splits** under `src/data/regression\_data/version 2/`.
+   * Created `Regression2.py` to generate **Version 2 data splits** under `src/data/regression\_data/version 2/`.
    * Dropped the zero-variance `HasAgent` and `HasCompany` flags.
    * Stripped trailing whitespace across all column names.
+   * Preserved Version 2 unchanged and created **Version 3** under `src/data/regression\_data/version 3/`.
+   * Version 3 strips trailing whitespace from categorical values, then applies the fixed top-10 country grouping before duplicate removal and splitting. This removes exact duplicate rows created when different countries are grouped into `Other`, then creates new train/validation/test splits with clean one-hot feature names.
+   * Version 3 removes 236 duplicate rows after country grouping and verifies zero duplicate rows within and across all three splits.
    * Preserved raw original CSVs and left the final test set **unopened and untouched**.
 2. **Feature Specificity Analysis (`RequiredCarParkingSpaces`):**
 
@@ -39,7 +42,7 @@ As part of the Task A (Regression) subteam, the following engineering, cleaning,
    * Evaluated OLS Linear Regression performance across uncompressed features, 99%, 95%, 90%, 85%, 80% variance, and 2D/3D component projections.
 6. **Unit \& Integration Test Suite (`tests/test\_regression\_baseline.py` \& `tests/test\_regression\_pca.py`):**
 
-   * Authored 14 automated tests covering data shapes, CLI routing, metric calculations, and strict test-set isolation. All 46 repository tests pass.
+   * Added automated tests covering data shapes, CLI routing, metric calculations, Version 3 split uniqueness, clean categorical text, and strict test-set isolation. All 56 repository tests pass.
 
 \---
 
@@ -51,26 +54,64 @@ In regression tasks, **Accuracy** (which measures discrete correct/incorrect cla
 * **MAE (Mean Absolute Error):** Average prediction error in dollars ($$$).
 * **RMSE (Root Mean Squared Error):** Penalizes larger prediction errors more heavily.
 
-### Baseline OLS Linear Regression (Version 2 Data)
+### Baseline OLS Linear Regression (Version 3 Data)
 
 |Evaluation Stage|MAE ($$$)|MSE|RMSE ($$$)|$R^2$|
 |-|:-:|:-:|:-:|:-:|
-|**5-Fold Cross-Validation (Train Set)**|$18.9258 \\pm 0.2093$|—|$25.1632 \\pm 0.4419$|$0.5932 \\pm 0.0090$|
-|**Validation Set Evaluation**|**18.8522**|**649.7113**|**25.4894**|**0.5990**|
+|**5-Fold Cross-Validation (Train Set)**|$18.9174 \\pm 0.1120$|—|$25.1875 \\pm 0.1733$|$0.5940 \\pm 0.0037$|
+|**Validation Set Evaluation**|**19.1080**|**651.2322**|**25.5193**|**0.5986**|
 
-* **Model Quality Assessment:** On average, the baseline model predicts room rates within **$\\approx $18.85$** of the true price, achieving an **$R^2$ of $0.5990$** ($59.9%$ variance explained).
+* **Model Quality Assessment:** On average, the baseline model predicts room rates within **$\\approx $19.11$** of the true price, achieving an **$R^2$ of $0.5986$** ($59.86%$ variance explained).
 
 ### PCA Feature Compression vs. Original Features (Validation Set)
 
 |Representation|Components ($k$)|Retained Variance|Val MAE ($$$)|Val RMSE ($$$)|Val $R^2$|
 |-|:-:|:-:|:-:|:-:|:-:|
-|**Full Original Features**|**50**|**100.0%**|**18.8522**|**25.4894**|**0.5990**|
-|**PCA 99% Variance**|43|99.0%|18.8516|25.5645|0.5967|
-|**PCA 95% Variance**|39|96.0%|20.1619|27.0228|0.5493|
-|**PCA 90% Variance**|35|91.2%|21.1551|27.9556|0.5177|
-|**PCA 2 Components**|2|13.4%|28.8772|37.8370|0.1165|
+|**Full Original Features**|**50**|**100.0%**|**19.1080**|**25.5193**|**0.5986**|
+|**PCA 99% Variance**|43|99.0%|19.1425|25.6033|0.5960|
+|**PCA 95% Variance**|39|95.7%|20.2011|26.9518|0.5523|
+|**PCA 90% Variance**|35|90.9%|21.1619|27.9092|0.5199|
+|**PCA 85% Variance**|32|86.0%|21.5763|28.2953|0.5066|
+|**PCA 80% Variance**|29|80.5%|21.9948|28.6502|0.4941|
+|**PCA 3 Components**|3|18.1%|27.7945|36.4517|0.1811|
+|**PCA 2 Components**|2|13.3%|28.6811|37.7180|0.1232|
 
-* **PCA Takeaway:** Full original features yield the highest $R^2$ ($0.5990$). 2D PCA retains only $13.4%$ variance and is suitable for scatter plot visualizations rather than primary predictive modeling.
+* **PCA Takeaway:** Full original features yield the highest $R^2$ ($0.5986$). 2D PCA retains only $13.3%$ variance and is suitable for scatter plot visualizations rather than primary predictive modeling.
+
+### Duplicate-Row Correction (Version 3)
+
+Version 1 and Version 2 had the same duplicate counts:
+
+|Check|Version 1|Version 2|
+|-|:-:|:-:|
+|Duplicate rows inside train|146|146|
+|Duplicate rows inside validation|8|8|
+|Duplicate rows inside test|5|5|
+|Distinct rows shared by train and validation|38|38|
+|Distinct rows shared by train and test|35|35|
+|Distinct rows shared by validation and test|15|15|
+
+The cause was the preprocessing order: exact duplicate rows were removed before splitting, then countries outside the top 10 were grouped into `Other` after splitting. Different bookings from different countries could therefore become identical after encoding. Version 2 inherited these rows because it only removed flag columns and renamed columns from the existing Version 1 splits.
+
+Version 3 fixes the order:
+
+1. Start from the Version 2 cleaned table.
+2. Strip trailing whitespace from categorical values and column names.
+3. Apply the fixed top-10 country grouping before splitting.
+4. Remove exact duplicate rows after grouping: 236 rows removed.
+5. Create new 70%/15%/15% splits with seed 42.
+6. Verify zero duplicate rows within each split and zero overlap between splits.
+
+Final Version 3 sizes:
+
+|File|Rows|Columns|
+|-|:-:|:-:|
+|`regression_cleaned.csv`|50,551|23|
+|`train_regression.csv`|35,384|51|
+|`val_regression.csv`|7,584|51|
+|`test_regression.csv`|7,583|51|
+
+The test split remains unused by training, cross-validation, validation evaluation, and PCA.
 
 \---
 
@@ -78,13 +119,14 @@ In regression tasks, **Accuracy** (which measures discrete correct/incorrect cla
 
 Follow these commands to execute the cleaning scripts, run tests, and inspect model outputs.
 
-### Step 1: Generate Version 2 Cleaned Regression Splits
+### Step 1: Generate Version 3 Cleaned Regression Splits
 
 ```bash
-python -m src.Preprocessing.Regression2
+python -m src.Preprocessing.Regression3
 ```
 
-* **What it does:** Reads `src/data/regression\_data/`, drops constant flags (`HasAgent`, `HasCompany`), strips whitespace from category names, and saves the cleaned matrices to `src/data/regression\_data/version 2/`.
+* **What it does:** Reads `src/data/regression\_data/version 2/regression_cleaned.csv`, strips trailing whitespace from categorical values and column names, applies the fixed top-10 country grouping, removes duplicate rows after grouping, fits the encoder and scaler on the new training split only, and saves the duplicate-free matrices to `src/data/regression\_data/version 3/`.
+* **Version history:** `src/data/regression\_data/version 2/` remains unchanged. `Regression2.py` is retained only to reproduce that earlier version.
 
 ### Step 2: Run the Automated Test Suite
 
@@ -92,7 +134,7 @@ python -m src.Preprocessing.Regression2
 python -m pytest -q
 ```
 
-* **What it does:** Verifies all 46 test cases across the repository, ensuring zero test-set access, correct input shapes, and proper pipeline behavior.
+* **What it does:** Runs the full repository test suite, including test-set isolation, Version 3 split uniqueness, input shapes, and pipeline behavior.
 
 ### Step 3: Run Baseline Cross-Validation \& Validation Evaluation
 
