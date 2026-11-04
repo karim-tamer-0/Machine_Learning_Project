@@ -68,3 +68,15 @@ classification:
       - BookingChanges
       - DaysInWaitingList
       - RequiredCarParkingSpaces
+
+clustering:
+  # Analysis point: booking creation time. Segments are discovered from attributes known
+  # when the booking is made; no outcome or post-booking column is a clustering input.
+  scaled_path: outputs/Clustering/kmeans_cleaned_scaled.csv
+  output_dir: outputs/Clustering
+  artifact_dir: artifacts/clustering
+  silhouette_sample: 10000     # silhouette is O(n^2): fixed random sample, seeded
+  k_range: [2, 13]             # k = 2..12 (python range, end exclusive)
+  baseline:                    # Milestone 1: untuned configuration (sklearn defaults)
+    n_clusters: 8
+    n_init: 10
