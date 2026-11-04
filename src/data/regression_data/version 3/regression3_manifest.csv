@@ -1,0 +1,2 @@
+source_file,source_rows,grouped_rows_before_deduplication,rows_after_deduplication,removed_duplicate_rows,train_rows,validation_rows,test_rows,columns,top_countries,random_state,artifact
+src\data\regression_data\version 2\regression_cleaned.csv,50787,50787,50551,236,35384,7584,7583,51,"PRT, FRA, GBR, DEU, ESP, ITA, BEL, BRA, NLD, USA",42,artifacts\regression_v3_preprocessor.joblib

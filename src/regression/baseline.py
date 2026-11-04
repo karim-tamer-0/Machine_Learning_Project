@@ -1,4 +1,4 @@
-"""Untuned Linear Regression baseline on the version 2 regression splits.
+"""Untuned Linear Regression baseline on the version 3 regression splits.
 
 The baseline is fitted on the training split and evaluated with five-fold
 cross-validation on the training split and on the validation split. The final
@@ -25,7 +25,7 @@ from sklearn.model_selection import KFold, cross_validate
 from sklearn.pipeline import Pipeline
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-DATA_DIR = PROJECT_ROOT / "src" / "data" / "regression_data" / "version 2"
+DATA_DIR = PROJECT_ROOT / "src" / "data" / "regression_data" / "version 3"
 OUTPUT_DIR = PROJECT_ROOT / "outputs" / "regression"
 MODEL_NAME = "linear_regression"
 SCORING = {
@@ -36,14 +36,14 @@ SCORING = {
 
 
 def load_regression_splits(data_dir=None):
-    """Load the version 2 train and validation splits. The test split is not read."""
+    """Load the version 3 train and validation splits. The test split is not read."""
     data_dir = Path(data_dir) if data_dir is not None else DATA_DIR
     train_path = data_dir / "train_regression.csv"
     val_path = data_dir / "val_regression.csv"
     if not train_path.exists() or not val_path.exists():
         raise SystemExit(
-            f"Version 2 regression splits not found in {data_dir}. "
-            "Run: python -m src.Preprocessing.Regression2"
+            f"Version 3 regression splits not found in {data_dir}. "
+            "Run: python -m src.Preprocessing.Regression3"
         )
 
     train = pd.read_csv(train_path)
@@ -119,7 +119,7 @@ def run_baseline_cv(model_name="all", data_dir=None, output_dir=None):
     row = {
         "model": MODEL_NAME,
         "config": "baseline (untuned)",
-        "feature_set": "version 2 (flags removed, names stripped)",
+        "feature_set": "version 3 (grouped countries and deduplicated before split)",
         "n_features": X_train.shape[1],
         "n_train": len(X_train),
         "cv_folds": cv.get_n_splits(),
@@ -162,7 +162,7 @@ def run_validation_report(model_name="all", data_dir=None, output_dir=None):
     row = {
         "model": MODEL_NAME,
         "config": "baseline (untuned)",
-        "feature_set": "version 2 (flags removed, names stripped)",
+        "feature_set": "version 3 (grouped countries and deduplicated before split)",
         "n_features": int(pipeline.named_steps["variance"].get_support().sum()),
         "n_train": len(X_train),
         "n_validation": len(X_val),

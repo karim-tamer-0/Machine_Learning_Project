@@ -1,4 +1,4 @@
-"""PCA analysis for the ADR regression task on the version 2 data.
+"""PCA analysis for the ADR regression task on the version 3 data.
 
 The projection is fitted on the training split only. The validation split is
 used to inspect the projections and compare full-feature Linear Regression with

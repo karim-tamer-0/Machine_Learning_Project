@@ -16,11 +16,11 @@ def test_regression_metrics_are_exact_for_perfect_predictions():
     assert metrics["R2"] == 1.0
 
 
-def test_version_2_has_no_flags_or_padded_names():
+def test_version_3_has_no_flags_or_padded_names():
     X_train, X_val, y_train, y_val = baseline.load_regression_splits()
-    assert X_train.shape == (35548, 50)
-    assert X_val.shape == (7620, 50)
-    assert len(y_train) == 35548 and len(y_val) == 7620
+    assert X_train.shape == (35384, 50)
+    assert X_val.shape == (7584, 50)
+    assert len(y_train) == 35384 and len(y_val) == 7584
     assert "HasAgent" not in X_train.columns
     assert "HasCompany" not in X_train.columns
     assert "RequiredCarParkingSpaces" in X_train.columns
@@ -28,6 +28,43 @@ def test_version_2_has_no_flags_or_padded_names():
     assert all(column == column.rstrip() for column in X_train.columns)
     assert not X_train.isna().any().any()
     assert not X_val.isna().any().any()
+
+
+def test_version_3_splits_are_disjoint():
+    train = pd.read_csv(baseline.DATA_DIR / "train_regression.csv")
+    val = pd.read_csv(baseline.DATA_DIR / "val_regression.csv")
+    test = pd.read_csv(baseline.DATA_DIR / "test_regression.csv")
+
+    assert train.duplicated().sum() == 0
+    assert val.duplicated().sum() == 0
+    assert test.duplicated().sum() == 0
+    assert train.merge(val, how="inner").empty
+    assert train.merge(test, how="inner").empty
+    assert val.merge(test, how="inner").empty
+
+
+def test_version_3_raw_files_have_clean_categorical_text():
+    categorical_columns = [
+        "Meal",
+        "Country",
+        "MarketSegment",
+        "DistributionChannel",
+        "ReservedRoomType",
+        "DepositType",
+        "CustomerType",
+    ]
+    cleaned = pd.read_csv(baseline.DATA_DIR / "regression_cleaned.csv")
+    for column in categorical_columns:
+        values = cleaned[column].astype(str)
+        assert (values == values.str.strip()).all()
+
+    for filename in (
+        "train_regression.csv",
+        "val_regression.csv",
+        "test_regression.csv",
+    ):
+        frame = pd.read_csv(baseline.DATA_DIR / filename)
+        assert all(column == column.strip() for column in frame.columns)
 
 
 def test_loader_does_not_read_the_test_split(monkeypatch):
