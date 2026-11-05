@@ -4,3 +4,9 @@ __pycache__/
 artifacts/
 *.joblib
 .env
+
+
+# Visual Studio / VS Code internal files
+.vs/
+*.vsidx
+*.sqlite
