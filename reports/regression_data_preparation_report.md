@@ -1,6 +1,6 @@
 # Milestone 1: Task A – Regression Data Preparation & Leakage Audit Report (Version 3)
 
-**Team 29 | CSE382: Introduction to Machine Learning**
+**Team 28 | CSE382: Introduction to Machine Learning**
 **Target Variable:** Average Daily Rate (`ADR`)
 **Dataset:** City Hotel (`H2.csv` - 79,330 initial bookings)
 

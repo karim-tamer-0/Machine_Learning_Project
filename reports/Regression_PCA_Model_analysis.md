@@ -1,6 +1,6 @@
 Task A (Linear Regression / ADR Prediction) — Work Documentation 
 **Course:** CSE382 Introduction to Machine Learning  
-**Team:** 29  
+**Team:** 28  
 **Target Variable:** Average Daily Rate (`ADR`)  
 **Dataset:** City Hotel (`H2.csv` — 79,330 raw records)  
 **Context Date:** November 2026
