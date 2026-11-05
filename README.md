@@ -32,22 +32,6 @@ pip install -r requirements.txt
 
 Tested with Python 3.13 and scikit-learn 1.2 or newer. Run every command from the repository root.
 
-## Regression (Task A - ADR Prediction): baselines, Milestone 1
-
-- Prediction point: Initial booking creation in the hotel Property Management System (PMS). Post-booking outcome and lifecycle variables (`IsCanceled`, `ReservationStatus`, `ReservationStatusDate`, `AssignedRoomType`, `BookingChanges`, `DaysInWaitingList`) along with raw ID columns (`Agent`, `Company`) are excluded to eliminate target and lifecycle leakage.
-- Data & Splits: Version 3 cleaned pipeline filters non-positive rates (`ADR <= 0`), removes extreme corrupted outliers (`ADR > 1000`), normalizes categorical whitespace, applies fixed Top-10 country grouping, and removes duplicate rows prior to splitting. Split 70% train (35,384 rows) / 15% validation (7,584 rows) / 15% test (7,583 rows, locked) with seed 42.
-- Preprocessing: `StandardScaler` and `OneHotEncoder(drop='first', handle_unknown='ignore')` are fitted strictly on the training partition.
-- Baseline & PCA: Ordinary Least Squares (OLS) baseline achieves validation MAE $19.11, RMSE $25.52, and $R^2 = 0.5986$. PCA dimensionality reduction sweeps (99% down to 80% variance and 2D/3D projections) are evaluated under `src/regression/pca_analysis.py`.
-- Reports: `reports/regression_data_preparation_report.md` and `reports/Regression_PCA_Model_analysis.md`.
-
-```bash
-python -m src.Preprocessing.Regression3                             # generate Version 3 cleaned splits
-python main.py baseline --task regression --model linear_regression # 5-fold CV on the training set
-python main.py evaluate --task regression --model linear_regression # validation evaluation and residual plots
-python main.py pca --task regression                                # PCA scree sweep and model comparison
-python -m pytest -q tests/test_regression_baseline.py tests/test_regression_pca.py
-
-
 ## Classification (IsCanceled): baselines, Milestone 1
 
 - Prediction point: booking creation time. Features: the "strict" list in `config.yaml`.
@@ -61,6 +45,26 @@ python -m pytest -q                                         # run all tests
 ```
 
 Results are written to `outputs/classification/`: `baseline_cv_metrics.csv`, `baseline_validation_metrics.csv`, `confusion_matrix_baseline_*.png` and `splits/split_indices.csv`.
+
+## Regression (Task A, ADR): baseline, Milestone 1
+
+- Target: `ADR` (average daily rate). Prediction point: booking creation time, so post-booking columns (IsCanceled, ReservationStatus*, AssignedRoomType, BookingChanges, DaysInWaitingList) and the raw Agent/Company IDs are dropped.
+- Cleaning: rows with `ADR <= 0` and the single `ADR = 5400` outlier are removed. Countries outside a fixed top 10 are grouped into `Other` **before** duplicates are removed and the data is split (Version 3, 236 extra duplicates removed). Versions 1 and 2 grouped countries after the split, which leaked identical rows across train/validation/test.
+- Data: 50,551 cleaned rows, split 70% / 15% / 15% (seed 42) into 35,384 train / 7,584 validation / 7,583 test. The scaler and one-hot encoder are fitted on the training split only, and the test set is not used in Milestone 1.
+- Baseline: untuned OLS Linear Regression. 5-fold CV on train gives R² 0.594 ± 0.004. On validation: MAE 19.11, RMSE 25.52, R² 0.599.
+- PCA: the full 50 features score best. Keeping 99% of the variance (43 components) is almost identical (R² 0.596), but accuracy drops quickly below that (R² 0.552 at 95%, 0.494 at 80%). Two components (13% of the variance) are only good for plotting (R² 0.123).
+- Reports: `reports/regression_data_preparation_report.md` and `reports/Regression_PCA_Model_analysis.md`.
+
+```bash
+python -m src.Preprocessing.Regression3                     # rebuild the Version 3 cleaned data and splits
+python main.py baseline --task regression --model linear_regression   # 5-fold CV on the training set
+python main.py evaluate --task regression --model linear_regression   # validation metrics and residual plot
+python main.py pca --task regression                        # PCA experiments
+python -m pytest -q tests/test_regression_baseline.py tests/test_regression_pca.py
+```
+
+Results go to `outputs/regression/` (and `outputs/regression/pca/`). Split data is in `src/data/regression_data/version 3/`; Version 2 is kept only for reproducibility.
+
 ## Clustering (Task C): baseline, Milestone 1
 
 - Analysis point: booking creation time. Input: `outputs/Clustering/kmeans_cleaned_scaled.csv` (made by `src/Preprocessing/Clustering/clusteringprocessing.py`). Outcome columns (IsCanceled, ReservationStatus*, ADR, AssignedRoomType, BookingChanges, DaysInWaitingList) are not inputs.
