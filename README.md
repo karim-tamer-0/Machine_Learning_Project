@@ -1,5 +1,5 @@
 # Machine-Learning-Project
-Team 29's Machine Learning Project
+Team 28's Machine Learning Project
 
 ## Classification data preparation
 
