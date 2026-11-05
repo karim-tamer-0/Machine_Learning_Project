@@ -32,6 +32,21 @@ pip install -r requirements.txt
 
 Tested with Python 3.13 and scikit-learn 1.2 or newer. Run every command from the repository root.
 
+## Regression (Task A - ADR Prediction): Milestone 1
+
+- Prediction point: Initial booking creation in the Property Management System (PMS)[cite: 5, 6]. Post-booking outcome and lifecycle variables (`IsCanceled`, `ReservationStatus`, `ReservationStatusDate`, `AssignedRoomType`, `BookingChanges`, `DaysInWaitingList`) along with raw ID columns (`Agent`, `Company`) are excluded to prevent target leakage[cite: 5, 6].
+- Data & Splits: Version 3 cleaned pipeline removes extreme outliers (`ADR > 1000`), filters non-positive rates (`ADR <= 0`), normalizes categorical whitespace, applies fixed Top-10 country grouping, and strips duplicate rows prior to splitting[cite: 5, 6]. Split 70% train (35,384 rows) / 15% validation (7,584 rows) / 15% test (7,583 rows, locked) with seed 42[cite: 5, 6].
+- Preprocessing: `StandardScaler` and `OneHotEncoder(drop='first')` fitted strictly on the training partition[cite: 5, 6].
+- Baselines & PCA: Ordinary Least Squares (OLS) baseline achieves validation MAE $19.11, RMSE $25.52, and $R^2 = 0.5986$. Full PCA variance sweeps and 2D/3D projections are evaluated under `src/regression/pca_analysis.py`[cite: 6].
+- Reports: `reports/regression_data_preparation_report.md` and `reports/Regression_PCA_Model_analysis.md`[cite: 5, 6].
+
+```bash
+python -m src.Preprocessing.Regression3                        # generate Version 3 cleaned splits
+python main.py baseline --task regression --model linear_regression # 5-fold CV on train split
+python main.py evaluate --task regression --model linear_regression # validation evaluation & residuals
+python main.py pca --task regression                                # PCA scree sweep & comparison table
+python -m pytest -q tests/test_regression_baseline.py tests/test_regression_pca.py
+
 ## Classification (IsCanceled): baselines, Milestone 1
 
 - Prediction point: booking creation time. Features: the "strict" list in `config.yaml`.
