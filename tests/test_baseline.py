@@ -27,3 +27,16 @@ def test_baselines_include_a_linear_model_and_an_ensemble_and_both_fit():
     for name, (model, scaled) in models.items():
         pipe = build_pipeline(model, scale=scaled).fit(X, y)
         assert pipe.predict(X).shape == (len(X),)
+
+def test_decision_tree_and_mlp_are_registered_with_correct_scaling():
+    from src.classification.baseline import baseline_models
+    models = baseline_models(42)
+    assert models["decision_tree"][1] is False   # trees use unscaled input
+    assert models["mlp"][1] is True              # the neural network uses scaled input
+
+
+def test_every_tunable_model_is_in_the_registry():
+    from src.classification.baseline import baseline_models
+    from src.data.loader import load_config
+    spaces = load_config()["classification"]["tuning"]["search_spaces"]
+    assert set(spaces) <= set(baseline_models(42))        

@@ -9,6 +9,8 @@ import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import cross_validate
+from sklearn.neural_network import MLPClassifier
+from sklearn.tree import DecisionTreeClassifier
 
 from src.classification.pipeline import build_pipeline
 from src.data.loader import PROJECT_ROOT, load_config
@@ -46,6 +48,8 @@ def baseline_models(seed):
     return {
         "logistic_regression": (LogisticRegression(max_iter=1000, random_state=seed), True),
         "random_forest": (RandomForestClassifier(random_state=seed, n_jobs=-1), False),
+        "decision_tree": (DecisionTreeClassifier(random_state=seed), False),
+        "mlp": (MLPClassifier(max_iter=300, early_stopping=True, random_state=seed), True),
     }
 
 
