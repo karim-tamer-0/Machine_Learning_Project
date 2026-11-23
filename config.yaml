@@ -25,7 +25,11 @@ classification:
     val_size: 0.2
     test_size: 0.1
     cv_folds: 5
-  
+
+  pca:
+    variance_threshold: 0.95     # keep the fewest components that explain 95% of the variance
+    sweep_thresholds: [0.80, 0.90, 0.95, 0.99, 1.0]
+
   tuning:
     scoring: average_precision   # PR-AUC
     n_iter: 25                   # random combinations tried per model

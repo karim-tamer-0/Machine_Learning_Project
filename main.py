@@ -6,6 +6,7 @@ Milestone 1 commands:
     python main.py baseline --task regression --model linear_regression
     python main.py evaluate --task regression --model linear_regression
     python main.py pca --task regression
+    python main.py pca --task classification
 
     python main.py cluster --algorithm kmeans
     python main.py cluster --algorithm kmeans --compare
@@ -51,9 +52,13 @@ def cmd_evaluate(args):
 
 def cmd_pca(args):
     """Run PCA analysis on the training and validation splits."""
-    _require_task(args, ["regression"])
-    from src.regression.pca_analysis import run_pca_analysis
-    run_pca_analysis()
+    _require_task(args, ["regression", "classification"])
+    if args.task == "classification":
+        from src.classification.pca import run_pca_analysis
+        run_pca_analysis()
+    else:
+        from src.regression.pca_analysis import run_pca_analysis
+        run_pca_analysis()
 
 
 def cmd_cluster(args):

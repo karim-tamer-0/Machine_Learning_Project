@@ -59,9 +59,19 @@ def test_regression_pca_is_dispatched(monkeypatch):
     assert called["ran"]
 
 
-def test_pca_rejects_classification():
+def test_classification_pca_is_dispatched(monkeypatch):
+    import src.classification.pca as classification_pca
+
+    called = {}
+    monkeypatch.setattr(
+        classification_pca, "run_pca_analysis", lambda: called.update(ran=True))
+    main(["pca", "--task", "classification"])
+    assert called["ran"]
+
+
+def test_pca_rejects_clustering():
     with pytest.raises(SystemExit):
-        main(["pca", "--task", "classification"])
+        main(["pca", "--task", "clustering"])
 
 
 def test_unknown_model_exits_with_a_message():
