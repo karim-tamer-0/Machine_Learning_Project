@@ -9,6 +9,8 @@ import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import cross_validate
+from sklearn.naive_bayes import GaussianNB
+from xgboost import XGBClassifier
 
 from src.classification.pipeline import build_pipeline
 from src.data.loader import PROJECT_ROOT, load_config
@@ -46,6 +48,8 @@ def baseline_models(seed):
     return {
         "logistic_regression": (LogisticRegression(max_iter=1000, random_state=seed), True),
         "random_forest": (RandomForestClassifier(random_state=seed, n_jobs=-1), False),
+        "gaussian_nb": (GaussianNB(), True),
+        "xgboost": (XGBClassifier(random_state=seed, n_jobs=-1, eval_metric="logloss"), False),
     }
 
 
