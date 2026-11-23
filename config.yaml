@@ -25,6 +25,25 @@ classification:
     val_size: 0.2
     test_size: 0.1
     cv_folds: 5
+  
+  tuning:
+    scoring: average_precision   # PR-AUC
+    n_iter: 25                   # random combinations tried per model
+    search_spaces:
+      random_forest:
+        model__n_estimators: {type: int, low: 100, high: 300}
+        model__max_depth: {type: int, low: 5, high: 40}
+        model__min_samples_leaf: {type: int, low: 1, high: 30}
+        model__max_features: {type: choice, values: [sqrt, log2, 0.3, 0.5]}
+      decision_tree:
+        model__max_depth: {type: int, low: 3, high: 30}
+        model__min_samples_leaf: {type: int, low: 1, high: 100}
+        model__min_samples_split: {type: int, low: 2, high: 50}
+        model__criterion: {type: choice, values: [gini, entropy]}
+      mlp:
+        model__hidden_layer_sizes: {type: choice, values: [[64], [128], [64, 32], [128, 64]]}
+        model__alpha: {type: float, low: 0.00001, high: 0.1, log: true}
+        model__learning_rate_init: {type: float, low: 0.0001, high: 0.01, log: true}
 
   features:
     # Fixed when the booking is created. Use this list for the reported results.
