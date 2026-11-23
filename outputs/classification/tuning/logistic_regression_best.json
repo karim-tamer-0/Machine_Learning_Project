@@ -1,0 +1,39 @@
+{
+  "model": "logistic_regression",
+  "optimisation_metric": "average_precision",
+  "n_iter": 25,
+  "seed": 42,
+  "best_cv_score": 0.5549803689047764,
+  "best_params": {
+    "model__C": 14.528246637516036
+  },
+  "metrics": {
+    "model": "logistic_regression",
+    "config": "tuned",
+    "feature_set": "strict",
+    "preprocessing": "scaled",
+    "cv_accuracy_mean": 0.7266709945047398,
+    "cv_accuracy_std": 0.0028870193955751614,
+    "cv_precision_mean": 0.6346920339150196,
+    "cv_precision_std": 0.016074933452400218,
+    "cv_recall_mean": 0.2334026725320002,
+    "cv_recall_std": 0.004200128588546032,
+    "cv_f1_mean": 0.3412274293795606,
+    "cv_f1_std": 0.004930057115453923,
+    "cv_roc_auc_mean": 0.7343054790516617,
+    "cv_roc_auc_std": 0.007589675869561038,
+    "cv_pr_auc_mean": 0.5549803689047764,
+    "cv_pr_auc_std": 0.00637731112214578,
+    "train_f1_mean": 0.34276941189110666,
+    "fit_time_per_fold_s": 0.4520284175872803,
+    "total_time_s": 82.45714359998237
+  },
+  "search_space": {
+    "model__C": {
+      "type": "float",
+      "low": 0.001,
+      "high": 100,
+      "log": true
+    }
+  }
+}
