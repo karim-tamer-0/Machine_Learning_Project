@@ -1,0 +1,39 @@
+{
+  "model": "gaussian_nb",
+  "optimisation_metric": "average_precision",
+  "n_iter": 25,
+  "seed": 42,
+  "best_cv_score": 0.4997468171909851,
+  "best_params": {
+    "model__var_smoothing": 0.024780710226621445
+  },
+  "metrics": {
+    "model": "gaussian_nb",
+    "config": "tuned",
+    "feature_set": "strict",
+    "preprocessing": "scaled",
+    "cv_accuracy_mean": 0.5459991080201216,
+    "cv_accuracy_std": 0.007473521760575784,
+    "cv_precision_mean": 0.38479300318379317,
+    "cv_precision_std": 0.005019091115106782,
+    "cv_recall_mean": 0.8295461255338832,
+    "cv_recall_std": 0.010234876076242573,
+    "cv_f1_mean": 0.5257107517086881,
+    "cv_f1_std": 0.006220767881482558,
+    "cv_roc_auc_mean": 0.6992121138063985,
+    "cv_roc_auc_std": 0.007680078910758202,
+    "cv_pr_auc_mean": 0.4997468171909851,
+    "cv_pr_auc_std": 0.010134083380758363,
+    "train_f1_mean": 0.525471276488828,
+    "fit_time_per_fold_s": 0.2766420364379883,
+    "total_time_s": 71.07112810004037
+  },
+  "search_space": {
+    "model__var_smoothing": {
+      "type": "float",
+      "low": 1e-12,
+      "high": 1.0,
+      "log": true
+    }
+  }
+}
