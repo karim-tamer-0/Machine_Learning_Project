@@ -31,16 +31,27 @@ def load_all_models(config=None):
 
 
 def get_features(feature_set="strict", config=None):
-    """Return (numeric, categorical) column lists for 'strict' or 'relaxed'."""
+    """Return (numeric, categorical) column lists for 'strict', 'relaxed', or
+    'strict+<Column>' (strict plus one borderline column, used to measure each one)."""
     config = config or load_config()
     features = config["classification"]["features"]
     numeric = list(features["strict"]["numeric"])
     categorical = list(features["strict"]["categorical"])
+    extra_numeric = features["relaxed_extra"]["numeric"]
+    extra_categorical = features["relaxed_extra"]["categorical"]
     if feature_set == "relaxed":
-        numeric += features["relaxed_extra"]["numeric"]
-        categorical += features["relaxed_extra"]["categorical"]
+        numeric += extra_numeric
+        categorical += extra_categorical
+    elif feature_set.startswith("strict+"):
+        column = feature_set.split("+", 1)[1]
+        if column in extra_numeric:
+            numeric.append(column)
+        elif column in extra_categorical:
+            categorical.append(column)
+        else:
+            raise ValueError(f"'{column}' is not a relaxed_extra column")
     elif feature_set != "strict":
-        raise ValueError("feature_set must be 'strict' or 'relaxed'")
+        raise ValueError("feature_set must be 'strict', 'relaxed' or 'strict+<Column>'")
     return numeric, categorical
 
 
